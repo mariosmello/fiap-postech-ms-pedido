@@ -60,8 +60,8 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 WORKDIR /var/www/html
 RUN composer install
 RUN php artisan key:generate
-RUN php artisan migrate
-RUN php artisan db:seed
+#RUN php artisan migrate
+#RUN php artisan db:seed
 
 EXPOSE 80
 

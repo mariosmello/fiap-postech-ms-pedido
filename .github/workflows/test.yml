@@ -1,19 +1,17 @@
 name: Run Pest Tests
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches:
+      - 'develop'
+      - 'main'
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
 
     env:
-      DB_DATABASE: test_identidade
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_DATABASE: test_pedidos
 
     steps:
       - name: Checkout code
@@ -32,7 +30,7 @@ jobs:
           php-version: 8.2
 
       - name: Install dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist --ignore-platform-req=ext-mongodb
 
       - name: Set up Laravel environment
         run: cp .env.testing .env
@@ -46,9 +44,15 @@ jobs:
           DB_URI: mongodb://default:secret@127.0.0.1:27017
 
       - name: Run Pest tests
-        run: ./vendor/bin/pest --coverage
+        run: ./vendor/bin/pest --coverage-clover=coverage.xml
         env:
           DB_URI: mongodb://default:secret@127.0.0.1:27017
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Get Composer cache directory
         id: composer-cache
