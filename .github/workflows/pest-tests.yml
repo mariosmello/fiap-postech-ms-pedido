@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_DATABASE: test_identidade
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_DATABASE: test_pedidos
 
     steps:
       - name: Checkout code
