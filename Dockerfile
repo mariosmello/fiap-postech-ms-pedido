@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
-#RUN pecl install xdebug \
-#    && docker-php-ext-enable xdebug \
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 # Add docker php ext repo
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/

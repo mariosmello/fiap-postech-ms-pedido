@@ -1,0 +1,63 @@
+name: Run Pest Tests
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_DATABASE: test_identidade
+      DB_USER: root
+      DB_PASSWORD: root
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-username: default
+          mongodb-password: secret
+          mongodb-db: test_pedidos
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Set up Laravel environment
+        run: cp .env.testing .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run Migrations
+        run: php artisan migrate --force -v
+        env:
+          DB_URI: mongodb://default:secret@127.0.0.1:27017
+
+      - name: Run Pest tests
+        run: ./vendor/bin/pest --coverage
+        env:
+          DB_URI: mongodb://default:secret@127.0.0.1:27017
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
