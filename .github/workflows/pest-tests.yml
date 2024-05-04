@@ -30,7 +30,7 @@ jobs:
           php-version: 8.2
 
       - name: Composer update
-        run: composer install
+        run: composer update
 
       - name: Set up Laravel environment
         run: cp .env.testing .env
