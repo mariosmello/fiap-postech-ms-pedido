@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateInvoice;
 use App\Actions\CreateOrder;
 use App\Actions\FindProducts;
 use App\Http\Requests\CreateOrderRequest;

@@ -10,6 +10,14 @@ use Illuminate\Support\Str;
 
 class CreateOrder
 {
+
+    protected $createInvoice;
+
+    public function __construct(CreateInvoice $createInvoice)
+    {
+        $this->createInvoice = $createInvoice;
+    }
+
     public function handle(Request $request, array $products) :Order
     {
         $order = new \App\Models\Order();
@@ -41,6 +49,10 @@ class CreateOrder
         }
 
         $order->total = $total;
+        $order->save();
+
+        $invoice = $this->createInvoice->handle($order);
+        $order->invoice = $invoice['pix'];
         $order->save();
 
         return $order;
