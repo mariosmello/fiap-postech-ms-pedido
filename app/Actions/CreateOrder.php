@@ -22,6 +22,7 @@ class CreateOrder
     {
         $order = new \App\Models\Order();
         $order->status = 'pending';
+        $order->payment_status = 'pending';
         $order->code = Str::password(4, false, true, false, false);
         $order->save();
 
@@ -52,7 +53,10 @@ class CreateOrder
         $order->save();
 
         $invoice = $this->createInvoice->handle($order);
-        $order->invoice = $invoice['pix'];
+        $order->invoice = [
+            'id' => $invoice['_id'],
+            'payment' => $invoice['pix']
+        ];
         $order->save();
 
         return $order;
