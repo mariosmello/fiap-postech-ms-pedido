@@ -25,6 +25,6 @@ class ProcessWebhookStatus implements ShouldQueue
         $order->payment_status = $this->invoice['status'];
         $order->save();
 
-        ProcessProductionOrder::dispatch($order->toArray())->delay(2)->onQueue('orders');
+        ProcessProductionOrder::dispatch($order->toArray())->onQueue('orders');
     }
 }
