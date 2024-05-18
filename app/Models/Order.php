@@ -15,7 +15,7 @@ class Order extends Model
 
     protected $collection = 'orders';
 
-    protected $fillable = ['id', 'products', 'customer', 'status', 'payment_status'];
+    protected $fillable = ['id', 'products', 'customer', 'status', 'payment_status', 'code'];
 
     public function products(): EmbedsMany
     {
