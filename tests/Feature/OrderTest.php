@@ -86,3 +86,10 @@ it('can create a order', function () {
     ])->assertStatus(201);
 
 });
+
+it('can list orders', function () {
+    $this->getJson(
+        route('orders.index'),
+        ['Authorization' => 'Bearer ' . $this->token]
+    )->assertStatus(200);
+});
