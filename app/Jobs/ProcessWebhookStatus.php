@@ -16,6 +16,10 @@ class ProcessWebhookStatus implements ShouldQueue
 
     protected $invoice;
 
+    public function __construct($invoice) {
+        $this->invoice = $invoice;
+    }
+
     /**
      * Execute the job.
      */
