@@ -1,10 +1,11 @@
 name: Run Pest Tests
 
 on:
-  pull_request:
+  push:
     branches:
-      - 'develop'
-      - 'main'
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   run-tests:
