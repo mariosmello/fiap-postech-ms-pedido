@@ -2,9 +2,9 @@
 
 namespace App\Actions;
 
+use App\Jobs\OrderCreated;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 
@@ -52,12 +52,13 @@ class CreateOrder
         $order->total = $total;
         $order->save();
 
-        $invoice = $this->createInvoice->handle($order);
-        $order->invoice = [
-            'id' => $invoice['_id'],
-            'payment' => $invoice['pix']
-        ];
-        $order->save();
+        OrderCreated::dispatch([
+            'order' => $order->code,
+            'total' => $total,
+            'customer_id' => $request->get('auth')['sub'],
+            'customer_name' => $request->get('auth')['name'],
+        ])->onQueue('payment_updates')
+            ->delay(5);
 
         return $order;
     }
