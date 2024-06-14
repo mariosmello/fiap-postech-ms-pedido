@@ -10,14 +10,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ProcessProductionOrderStatus implements ShouldQueue
+class InvoicePaid implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $order;
+    protected $invoice;
 
-    public function __construct($order) {
-        $this->order = $order;
+    public function __construct($invoice) {
+        $this->invoice = $invoice;
     }
 
     /**
@@ -25,8 +25,10 @@ class ProcessProductionOrderStatus implements ShouldQueue
      */
     public function handle(): void
     {
-        $order = Order::where("code", $this->order['code'])->firstOrFail();
-        $order->status = $this->order['status'];
+        $order = Order::where('code', $this->invoice['order'])->firstOrFail();
+        $order->payment_status = $this->invoice['status'];
         $order->save();
+
+        OrderPaid::dispatch($order->toArray())->delay(5)->onQueue('production_updates');
     }
 }

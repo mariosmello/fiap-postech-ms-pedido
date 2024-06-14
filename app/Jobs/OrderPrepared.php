@@ -10,14 +10,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ProcessWebhookStatus implements ShouldQueue
+class OrderPrepared implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $invoice;
+    protected $order;
 
-    public function __construct($invoice) {
-        $this->invoice = $invoice;
+    public function __construct($order) {
+        $this->order = $order;
     }
 
     /**
@@ -25,10 +25,8 @@ class ProcessWebhookStatus implements ShouldQueue
      */
     public function handle(): void
     {
-        $order = Order::where('code', $this->invoice['order'])->firstOrFail();
-        $order->payment_status = $this->invoice['status'];
+        $order = Order::where("code", $this->order['code'])->firstOrFail();
+        $order->status = $this->order['status'];
         $order->save();
-
-        ProcessProductionOrder::dispatch($order->toArray())->delay(10)->onQueue('orders');
     }
 }
