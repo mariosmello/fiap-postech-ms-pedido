@@ -10,7 +10,7 @@ it('can update order status', function () {
         'status' => 'pending',
     ]);
 
-    $job = new \App\Jobs\ProcessProductionOrderStatus([
+    $job = new \App\Jobs\OrderPrepared([
         'code' => '12345',
         'status' => 'ready',
     ]);
