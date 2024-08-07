@@ -5,6 +5,9 @@ namespace App\Actions;
 use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * @deprecated
+ */
 class CreateInvoice
 {
     public function handle(Order $order) :array

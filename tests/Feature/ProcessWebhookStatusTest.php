@@ -14,7 +14,7 @@ it('can update order status', function () {
         'status' => 'paid',
     ];
 
-    $job = new \App\Jobs\ProcessWebhookStatus($invoice);
+    $job = new \App\Jobs\InvoicePaid($invoice);
     $job->handle();
 
     $order->refresh();

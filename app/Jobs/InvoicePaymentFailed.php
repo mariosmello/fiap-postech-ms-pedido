@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ProcessWebhookStatus implements ShouldQueue
+class InvoicePaymentFailed implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,8 +27,7 @@ class ProcessWebhookStatus implements ShouldQueue
     {
         $order = Order::where('code', $this->invoice['order'])->firstOrFail();
         $order->payment_status = $this->invoice['status'];
+        $order->status = 'cancelled';
         $order->save();
-
-        ProcessProductionOrder::dispatch($order->toArray())->onQueue('orders');
     }
 }
